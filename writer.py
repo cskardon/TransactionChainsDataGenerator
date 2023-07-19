@@ -1,5 +1,7 @@
 import rdflib
 from rdflib.namespace import RDF, RDFS, XSD
+import pandas as pd
+
 
 prefixBase = 'http://oxfordsemantic.tech/transactions/'
 mainPrefix = prefixBase + 'entities#'
@@ -21,6 +23,38 @@ def generateProperty(name):
 
 def generateBoolean(letter):
     return rdflib.Literal(letter == 'Y')
+
+def writeCSV(outputPath, parties, transactions):
+
+    #parties_df = pd.DataFrame(columns=('id', 'internal', 'firstName','lastName','exited','isSuspicious'))
+
+    # partycount=0
+    # for party in parties:
+    #     parties_df.loc[partycount] = pd.Series(party)
+    #     partycount+=1
+
+    parties_df = pd.DataFrame.from_dict(parties)
+
+    print("done updating parties and loading the dataframe")
+
+    if parties:
+        parties_df.to_csv(outputPath) #, compression='gzip'
+
+    #tx_df = pd.DataFrame(columns=('id', 'originator', 'beneficiary','amount','date'))
+
+    # txcount=0
+    for tx in transactions:
+        tx['originator'] = tx['originator']['id']
+        tx['beneficiary'] = tx['beneficiary']['id']
+        # tx_df.loc[txcount] = pd.Series(tx)
+        # txcount += 1
+    tx_df = pd.DataFrame.from_dict(transactions)
+
+    print("done updating tx and loading the dataframe")
+
+    if transactions:
+        tx_df.to_csv(outputPath) #, compression='gzip'
+
 
 def writeGraph(outputPath, fileFormat, parties, transactions):
     g = rdflib.Graph()

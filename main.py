@@ -17,7 +17,7 @@ from generator import (
     generateParty,
     generatePartyPair,
 )
-from writer import writeGraph
+from writer import writeGraph, writeCSV
 
 parties = []
 transactions = []
@@ -101,7 +101,7 @@ def invoke_command(
         sys.exit()
 
     fileFormat = "nt"
-    fileExtension = "nt"
+    fileExtension = "csv" #"nt"
 
     rows = int(transaction_count)
     if parties_count:
@@ -214,7 +214,8 @@ def write_files_multi_threaded(
     try:
         print("thread {0} is working on file:".format(threadName))
         print(outputPath)
-        writeGraph(str(outputPath), fileFormat, partyBatch, transactionBatch)
+        #writeGraph(str(outputPath), fileFormat, partyBatch, transactionBatch)
+        writeCSV(str(outputPath), partyBatch, transactionBatch)
     except:
         traceback.print_exc()
 
